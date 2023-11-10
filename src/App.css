@@ -1,0 +1,12 @@
+body {
+  min-height: 100vh;
+  background-color: #d5d5d5;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: calc(10px + 2vmin);
+  margin: 0;
+  padding: 0;
+  justify-content: center;
+}

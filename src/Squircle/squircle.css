@@ -1,0 +1,11 @@
+.react-squircle {
+  --squircle-radius: 5, 3;
+  --squircle-border-color: #61ac85;
+  --squircle-border-width: 1;
+
+  background-color: red;
+  mask-image: paint(react-squircle);
+
+  color: darkslategray;
+  padding: 1rem 2rem;
+}
