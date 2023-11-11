@@ -3,9 +3,17 @@ import Squircle from "./Squircle";
 
 function App() {
   return (
-    <>
-      <Squircle>Squircle</Squircle>
-    </>
+    <Squircle
+      className="squircle"
+      radius={[5, 3]}
+      renderCanvas="background"
+      shadow="0 0 0.5rem #000000"
+      borderColor="#fff"
+      borderWidth={2}
+      backgroundColor="#ff55ff"
+    >
+      Squircless
+    </Squircle>
   );
 }
 

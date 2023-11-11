@@ -6,8 +6,10 @@ const attachPaintWorkletScript = (scriptId: string) => {
     return;
   }
 
-  if (!CSS?.paintWorklet) {
-    console.warn("Paint worklet not supported");
+  if (!CSS.paintWorklet) {
+    console.warn(
+      "react-squircle: Paint worklet not supported. Falling back to border-radius."
+    );
     return;
   }
 
