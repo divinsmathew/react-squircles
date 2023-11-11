@@ -33,52 +33,49 @@ const Squircle = ({ className, children, radius, ...props }: SquircleProps) => {
     if (renderCanvas === "background") {
       if ((borderWidth || borderColor) && backgroundColor && shadow) {
         return {
-          variant:
-            VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER_AND_BACKGROUND_COLOR_AND_SHADOW,
+          variant: VARIANTS.BACKGROUND.BORDER_AND_BACKGROUND_COLOR_AND_SHADOW,
           props:
             props as BackgroundSquircleWithBorderAndBackgroundColorAndShadowProps,
         };
       }
       if (shadow && backgroundColor) {
         return {
-          variant:
-            VARIANTS.BACKGROUND_SQUIRCLE_WITH_BACKGROUND_COLOR_AND_SHADOW,
+          variant: VARIANTS.BACKGROUND.BACKGROUND_COLOR_AND_SHADOW,
           props: props as BackgroundSquircleWithBackgroundColorAndShadowProps,
         };
       }
       if (shadow && (borderWidth || borderColor)) {
         return {
-          variant: VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER_AND_SHADOW,
+          variant: VARIANTS.BACKGROUND.BORDER_AND_SHADOW,
           props: props as BackgroundSquircleWithBorderAndShadowProps,
         };
       }
       if ((borderWidth || borderColor) && backgroundColor) {
         return {
-          variant:
-            VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER_AND_BACKGROUND_COLOR,
+          variant: VARIANTS.BACKGROUND.BORDER_AND_BACKGROUND_COLOR,
           props: props as BackgroundSquircleWithBorderAndBackgroundColorProps,
         };
       }
       if (shadow) {
         return {
-          variant: VARIANTS.BACKGROUND_SQUIRCLE_WITH_SHADOW,
+          variant: VARIANTS.BACKGROUND.SHADOW,
           props: props as BackgroundSquircleWithShadowProps,
         };
       }
       if (backgroundColor) {
         return {
-          variant: VARIANTS.BACKGROUND_SQUIRCLE_WITH_BACKGROUND_COLOR,
+          variant: VARIANTS.BACKGROUND.BACKGROUND_COLOR,
           props: props as BackgroundSquircleWithBackgroundColorProps,
         };
       }
       if (borderWidth || borderColor) {
         return {
-          variant: VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER,
+          variant: VARIANTS.BACKGROUND.BORDER,
           props: props as BackgroundSquircleWithBorderProps,
         };
       }
       return {
-        variant: VARIANTS.BACKGROUND_SQUIRCLE_WITH_BACKGROUND_COLOR,
+        variant: VARIANTS.BACKGROUND.BACKGROUND_COLOR,
         props: props as BackgroundSquircleWithBackgroundColorProps,
       };
     }
@@ -86,24 +83,24 @@ const Squircle = ({ className, children, radius, ...props }: SquircleProps) => {
     if (renderCanvas === "mask") {
       if (backgroundColor) {
         return {
-          variant: VARIANTS.MASK_SQUIRCLE_WITH_BACKGROUND_COLOR,
+          variant: VARIANTS.MASK.BACKGROUND_COLOR,
           props: props as MaskSquircleWithBackgroundColorProps,
         };
       }
       if (background) {
         return {
-          variant: VARIANTS.MASK_SQUIRCLE_WITH_BACKGROUND,
+          variant: VARIANTS.MASK.BACKGROUND,
           props: props as MaskSquircleWithBackgroundProps,
         };
       }
       return {
-        variant: VARIANTS.MASK_SQUIRCLE_WITH_BACKGROUND,
+        variant: VARIANTS.MASK.BACKGROUND,
         props: props as MaskSquircleWithBackgroundProps,
       };
     }
 
     return {
-      variant: VARIANTS.BACKGROUND_SQUIRCLE_WITH_BACKGROUND_COLOR,
+      variant: VARIANTS.BACKGROUND.BACKGROUND_COLOR,
       props: props as BackgroundSquircleWithBackgroundColorProps,
     };
   };
@@ -123,12 +120,10 @@ const Squircle = ({ className, children, radius, ...props }: SquircleProps) => {
     );
 
     if (
-      variant === VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER ||
-      variant === VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER_AND_SHADOW ||
-      variant ===
-        VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER_AND_BACKGROUND_COLOR ||
-      variant ===
-        VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER_AND_BACKGROUND_COLOR_AND_SHADOW
+      variant === VARIANTS.BACKGROUND.BORDER ||
+      variant === VARIANTS.BACKGROUND.BORDER_AND_SHADOW ||
+      variant === VARIANTS.BACKGROUND.BORDER_AND_BACKGROUND_COLOR ||
+      variant === VARIANTS.BACKGROUND.BORDER_AND_BACKGROUND_COLOR_AND_SHADOW
     ) {
       root.style.setProperty(
         "--squircle-border-color",
@@ -142,14 +137,11 @@ const Squircle = ({ className, children, radius, ...props }: SquircleProps) => {
     }
 
     if (
-      variant === VARIANTS.BACKGROUND_SQUIRCLE_WITH_BACKGROUND_COLOR ||
-      variant ===
-        VARIANTS.BACKGROUND_SQUIRCLE_WITH_BACKGROUND_COLOR_AND_SHADOW ||
-      variant ===
-        VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER_AND_BACKGROUND_COLOR ||
-      variant ===
-        VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER_AND_BACKGROUND_COLOR_AND_SHADOW ||
-      variant === VARIANTS.MASK_SQUIRCLE_WITH_BACKGROUND_COLOR
+      variant === VARIANTS.BACKGROUND.BACKGROUND_COLOR ||
+      variant === VARIANTS.BACKGROUND.BACKGROUND_COLOR_AND_SHADOW ||
+      variant === VARIANTS.BACKGROUND.BORDER_AND_BACKGROUND_COLOR ||
+      variant === VARIANTS.BACKGROUND.BORDER_AND_BACKGROUND_COLOR_AND_SHADOW ||
+      variant === VARIANTS.MASK.BACKGROUND_COLOR
     ) {
       if (newProps.renderCanvas === "mask") {
         root.style.setProperty(
@@ -165,17 +157,15 @@ const Squircle = ({ className, children, radius, ...props }: SquircleProps) => {
     }
 
     if (
-      variant === VARIANTS.BACKGROUND_SQUIRCLE_WITH_SHADOW ||
-      variant ===
-        VARIANTS.BACKGROUND_SQUIRCLE_WITH_BACKGROUND_COLOR_AND_SHADOW ||
-      variant === VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER_AND_SHADOW ||
-      variant ===
-        VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER_AND_BACKGROUND_COLOR_AND_SHADOW
+      variant === VARIANTS.BACKGROUND.SHADOW ||
+      variant === VARIANTS.BACKGROUND.BACKGROUND_COLOR_AND_SHADOW ||
+      variant === VARIANTS.BACKGROUND.BORDER_AND_SHADOW ||
+      variant === VARIANTS.BACKGROUND.BORDER_AND_BACKGROUND_COLOR_AND_SHADOW
     ) {
       root.style.setProperty("filter", `drop-shadow(${newProps.shadow})`);
     }
 
-    if (variant === VARIANTS.MASK_SQUIRCLE_WITH_BACKGROUND) {
+    if (variant === VARIANTS.MASK.BACKGROUND) {
       root.style.setProperty("background", `${newProps.background}`);
     }
 
