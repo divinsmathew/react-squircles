@@ -1,99 +1,203 @@
-import React, { CSSProperties, useCallback, useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import attachPaintWorkletScript from "../utils/attach-paint-worklet";
-import { SCRIPT_ID } from "../constants/common";
+import { SCRIPT_ID, VARIANTS } from "../constants/common";
+
+import SquircleProps, {
+  BackgroundSquircleWithBackgroundColorAndShadowProps,
+  BackgroundSquircleWithBackgroundColorProps,
+  BackgroundSquircleWithBorderAndBackgroundColorAndShadowProps,
+  BackgroundSquircleWithBorderAndBackgroundColorProps,
+  BackgroundSquircleWithBorderAndShadowProps,
+  BackgroundSquircleWithBorderProps,
+  BackgroundSquircleWithShadowProps,
+  GenericSquircleProps,
+  MaskSquircleWithBackgroundColorProps,
+  MaskSquircleWithBackgroundProps,
+} from "./types";
 
 import "./squircle.css";
 
-type RenderTargetType = "auto" | "background" | "mask";
-
-type SquircleProps = {
-  children?: React.ReactNode;
-  radius: number | [number, number];
-  borderWidth?: number;
-  borderColor?: CSSProperties["borderColor"];
-  backgroundColor?: CSSProperties["backgroundColor"];
-  renderTarget?: RenderTargetType;
-} & React.HTMLAttributes<HTMLDivElement>;
-
-const Squircle = ({
-  children,
-  className,
-  borderWidth = 0,
-  borderColor,
-  radius,
-  backgroundColor = "",
-  renderTarget = "auto",
-}: SquircleProps) => {
+const Squircle = ({ className, children, radius, ...props }: SquircleProps) => {
   const squircleRef = React.useRef<HTMLDivElement>(null);
 
-  const detectBestRenderTarget = useCallback((): RenderTargetType => {
-    const root = squircleRef.current;
-    if (!root) return "background";
+  const getVariantProps = (props: GenericSquircleProps) => {
+    const {
+      renderCanvas,
+      shadow,
+      backgroundColor,
+      borderWidth,
+      borderColor,
+      background,
+    } = props;
 
-    const computedStyle = window.getComputedStyle(root);
-    const hasBackground = !!computedStyle.backgroundImage;
-    const hasMask = !!computedStyle.maskImage;
+    if (renderCanvas === "background") {
+      if ((borderWidth || borderColor) && backgroundColor && shadow) {
+        return {
+          variant:
+            VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER_AND_BACKGROUND_COLOR_AND_SHADOW,
+          props:
+            props as BackgroundSquircleWithBorderAndBackgroundColorAndShadowProps,
+        };
+      }
+      if (shadow && backgroundColor) {
+        return {
+          variant:
+            VARIANTS.BACKGROUND_SQUIRCLE_WITH_BACKGROUND_COLOR_AND_SHADOW,
+          props: props as BackgroundSquircleWithBackgroundColorAndShadowProps,
+        };
+      }
+      if (shadow && (borderWidth || borderColor)) {
+        return {
+          variant: VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER_AND_SHADOW,
+          props: props as BackgroundSquircleWithBorderAndShadowProps,
+        };
+      }
+      if ((borderWidth || borderColor) && backgroundColor) {
+        return {
+          variant:
+            VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER_AND_BACKGROUND_COLOR,
+          props: props as BackgroundSquircleWithBorderAndBackgroundColorProps,
+        };
+      }
+      if (shadow) {
+        return {
+          variant: VARIANTS.BACKGROUND_SQUIRCLE_WITH_SHADOW,
+          props: props as BackgroundSquircleWithShadowProps,
+        };
+      }
+      if (backgroundColor) {
+        return {
+          variant: VARIANTS.BACKGROUND_SQUIRCLE_WITH_BACKGROUND_COLOR,
+          props: props as BackgroundSquircleWithBackgroundColorProps,
+        };
+      }
+      if (borderWidth || borderColor) {
+        return {
+          variant: VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER,
+          props: props as BackgroundSquircleWithBorderProps,
+        };
+      }
+      return {
+        variant: VARIANTS.BACKGROUND_SQUIRCLE_WITH_BACKGROUND_COLOR,
+        props: props as BackgroundSquircleWithBackgroundColorProps,
+      };
+    }
 
-    if (hasBackground && !hasMask) return "mask";
-    if (borderColor || borderWidth) return "background";
+    if (renderCanvas === "mask") {
+      if (backgroundColor) {
+        return {
+          variant: VARIANTS.MASK_SQUIRCLE_WITH_BACKGROUND_COLOR,
+          props: props as MaskSquircleWithBackgroundColorProps,
+        };
+      }
+      if (background) {
+        return {
+          variant: VARIANTS.MASK_SQUIRCLE_WITH_BACKGROUND,
+          props: props as MaskSquircleWithBackgroundProps,
+        };
+      }
+      return {
+        variant: VARIANTS.MASK_SQUIRCLE_WITH_BACKGROUND,
+        props: props as MaskSquircleWithBackgroundProps,
+      };
+    }
 
-    return "background";
-  }, [borderColor, borderWidth]);
+    return {
+      variant: VARIANTS.BACKGROUND_SQUIRCLE_WITH_BACKGROUND_COLOR,
+      props: props as BackgroundSquircleWithBackgroundColorProps,
+    };
+  };
 
-  useEffect(() => {
-    attachPaintWorkletScript(SCRIPT_ID);
-
+  const attachStyles = useCallback(() => {
     const root = squircleRef.current;
     if (!root) return;
-
     root.style.setProperty(
       "--squircle-radius",
-      Array.isArray(radius) ? `${radius[0]}, ${radius[1]}` : `${radius}`
+      Array.isArray(radius) && radius.length == 2
+        ? `${radius[0]}, ${radius[1]}`
+        : `${radius}`
     );
 
-    if (borderColor) {
-      root.style.setProperty("--squircle-border-color", `${borderColor}`);
-    }
-    if (borderWidth) {
-      root.style.setProperty("--squircle-border-width", `${borderWidth}`);
-    }
-    if (backgroundColor) {
+    const { variant, props: newProps } = getVariantProps(
+      props as GenericSquircleProps
+    );
+
+    if (
+      variant === VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER ||
+      variant === VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER_AND_SHADOW ||
+      variant ===
+        VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER_AND_BACKGROUND_COLOR ||
+      variant ===
+        VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER_AND_BACKGROUND_COLOR_AND_SHADOW
+    ) {
       root.style.setProperty(
-        "--squircle-background-color",
-        `${backgroundColor}`
+        "--squircle-border-color",
+        `${newProps.borderColor ?? "#000"}`
+      );
+
+      root.style.setProperty(
+        "--squircle-border-width",
+        `${newProps.borderWidth ?? 1}`
       );
     }
 
-    let target: RenderTargetType = renderTarget;
-    if (renderTarget === "auto") {
-      target = detectBestRenderTarget();
+    if (
+      variant === VARIANTS.BACKGROUND_SQUIRCLE_WITH_BACKGROUND_COLOR ||
+      variant ===
+        VARIANTS.BACKGROUND_SQUIRCLE_WITH_BACKGROUND_COLOR_AND_SHADOW ||
+      variant ===
+        VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER_AND_BACKGROUND_COLOR ||
+      variant ===
+        VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER_AND_BACKGROUND_COLOR_AND_SHADOW ||
+      variant === VARIANTS.MASK_SQUIRCLE_WITH_BACKGROUND_COLOR
+    ) {
+      if (newProps.renderCanvas === "mask") {
+        root.style.setProperty(
+          "background-color",
+          `${newProps.backgroundColor}`
+        );
+      } else {
+        root.style.setProperty(
+          "--squircle-background-color",
+          `${newProps.backgroundColor}`
+        );
+      }
     }
 
-    console.log("target", target);
+    if (
+      variant === VARIANTS.BACKGROUND_SQUIRCLE_WITH_SHADOW ||
+      variant ===
+        VARIANTS.BACKGROUND_SQUIRCLE_WITH_BACKGROUND_COLOR_AND_SHADOW ||
+      variant === VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER_AND_SHADOW ||
+      variant ===
+        VARIANTS.BACKGROUND_SQUIRCLE_WITH_BORDER_AND_BACKGROUND_COLOR_AND_SHADOW
+    ) {
+      root.style.setProperty("filter", `drop-shadow(${newProps.shadow})`);
+    }
 
-    if (target === "background") {
+    if (variant === VARIANTS.MASK_SQUIRCLE_WITH_BACKGROUND) {
+      root.style.setProperty("background", `${newProps.background}`);
+    }
+
+    if (props.renderCanvas === "background") {
       root.style.setProperty("background", "paint(react-squircle)");
     }
-    if (target === "mask") {
+    if (props.renderCanvas === "mask") {
       root.style.setProperty("mask-image", "paint(react-squircle)");
       root.style.setProperty("-webkit-mask-image", "paint(react-squircle)");
     }
-  }, [
-    backgroundColor,
-    borderColor,
-    borderWidth,
-    detectBestRenderTarget,
-    radius,
-    renderTarget,
-  ]);
+  }, [props, radius]);
+
+  useEffect(() => {
+    attachPaintWorkletScript(SCRIPT_ID);
+    attachStyles();
+  }, [attachStyles, props, radius]);
 
   const wrapperClasses = `react-squircle ${className ?? ""}`.trim();
 
   return (
-    <div className="wrapper">
-      <div className={wrapperClasses} ref={squircleRef}>
-        {children}
-      </div>
+    <div className={wrapperClasses} ref={squircleRef}>
+      {children}
     </div>
   );
 };
