@@ -12,7 +12,7 @@ function App() {
       borderWidth={2}
       backgroundColor="#ff55ff"
     >
-      Squircless
+      Squircle
     </Squircle>
   );
 }
