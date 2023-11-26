@@ -75,7 +75,7 @@ export type MaskSquircleWithBackgroundProps = MaskSquircleProps & {
 
 export type GenericSquircleProps = {
   children?: React.ReactNode;
-  radius: number | [number, number];
+  radius?: number | [number, number];
   className?: string;
   renderCanvas?: "background" | "mask";
   shadow?: CSSProperties["filter"];
