@@ -15,8 +15,6 @@ import SquircleProps, {
   MaskSquircleWithBackgroundProps,
 } from "./types";
 
-import "./squircle.css";
-
 const Squircle = ({ className, children, radius, ...props }: SquircleProps) => {
   const squircleRef = React.useRef<HTMLDivElement>(null);
 
@@ -185,8 +183,22 @@ const Squircle = ({ className, children, radius, ...props }: SquircleProps) => {
 
   const wrapperClasses = `react-squircle ${className ?? ""}`.trim();
 
+  const elementProps = {
+    ...props,
+  } as GenericSquircleProps;
+
+  delete elementProps.variant;
+  delete elementProps.className;
+  delete elementProps.children;
+  delete elementProps.radius;
+  delete elementProps.shadow;
+  delete elementProps.backgroundColor;
+  delete elementProps.borderWidth;
+  delete elementProps.borderColor;
+  delete elementProps.background;
+
   return (
-    <div className={wrapperClasses} ref={squircleRef}>
+    <div className={wrapperClasses} ref={squircleRef} {...elementProps}>
       {children}
     </div>
   );

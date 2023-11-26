@@ -1,10 +1,10 @@
-import { CSSProperties } from "react";
+import React, { CSSProperties } from "react";
 
 type BaseSquircleProps = {
   children?: React.ReactNode;
   radius: number | [number, number];
   className?: string;
-};
+} & React.HTMLAttributes<HTMLElement>;
 
 type BackgroundSquircleProps = BaseSquircleProps & {
   renderCanvas: "background";
@@ -73,13 +73,17 @@ export type MaskSquircleWithBackgroundProps = MaskSquircleProps & {
   variant?: "ms-bg";
 };
 
-export type GenericSquircleProps = BaseSquircleProps & {
+export type GenericSquircleProps = {
+  children?: React.ReactNode;
+  radius: number | [number, number];
+  className?: string;
   renderCanvas?: "background" | "mask";
   shadow?: CSSProperties["filter"];
   backgroundColor?: CSSProperties["backgroundColor"];
   borderWidth?: number;
   borderColor?: CSSProperties["borderColor"];
   background?: CSSProperties["background"];
+  variant?: "generic";
 };
 
 type SquircleProps =
