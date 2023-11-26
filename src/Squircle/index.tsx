@@ -18,16 +18,14 @@ import SquircleProps, {
 const Squircle = ({ className, children, radius, ...props }: SquircleProps) => {
   const squircleRef = React.useRef<HTMLDivElement>(null);
 
-  const getVariantProps = (props: GenericSquircleProps) => {
-    const {
-      renderCanvas,
-      shadow,
-      backgroundColor,
-      borderWidth,
-      borderColor,
-      background,
-    } = props;
-
+  const getVariantProps = ({
+    renderCanvas = "mask",
+    shadow,
+    backgroundColor,
+    borderWidth,
+    borderColor,
+    background,
+  }: GenericSquircleProps) => {
     if (renderCanvas === "background") {
       if ((borderWidth || borderColor) && backgroundColor && shadow) {
         return {
@@ -191,6 +189,7 @@ const Squircle = ({ className, children, radius, ...props }: SquircleProps) => {
   delete elementProps.className;
   delete elementProps.children;
   delete elementProps.radius;
+  delete elementProps.renderCanvas;
   delete elementProps.shadow;
   delete elementProps.backgroundColor;
   delete elementProps.borderWidth;
